@@ -1,0 +1,272 @@
+openapi: 3.0.0
+info:
+  description: API para gestionar proyectos, blogs y usuarios
+  version: 1.0.0
+  title: API para Gestionar proyectos, blogs y usuarios
+
+paths:
+  /projects:
+    get:
+      summary: Obtener todos los proyectos
+      description: Devuelve una lista de todos los proyectos.
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+    post:
+      summary: Crear un nuevo proyecto
+      description: Crea un nuevo proyecto con la información proporcionada.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Proyecto creado exitosamente
+        '400':
+          description: Datos de entrada no válidos
+        '500':
+          description: Error del servidor
+
+  /projects/{id}:
+    get:
+      summary: Obtener un proyecto por su ID
+      description: Devuelve un proyecto específico según su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a obtener
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+
+    put:
+      summary: Actualizar un proyecto por su ID
+      description: Actualiza un proyecto existente según su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a actualizar
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Proyecto actualizado exitosamente
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+
+    delete:
+      summary: Eliminar un proyecto por su ID
+      description: Elimina un proyecto existente según su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a eliminar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Proyecto eliminado exitosamente
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+          
+  /projects/{projectId}/tags:
+    get:
+      summary: Obtener las etiquetas relacionadas con el proyecto
+      description: Devuelve las etiquetas relacionadas con un proyecto específico según su ID.
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Etiquetas relacionadas con el proyecto obtenidas correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+  
+  /projects/{projectId}/codes:
+    get:
+      summary: Obtener los códigos relacionados con el proyecto
+      description: Devuelve los códigos relacionados con un proyecto específico según su ID.
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Códigos relacionados con el proyecto obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Code'
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+  
+  /projects/{projectId}/details:
+    get:
+      summary: Obtener los detalles relacionados con el proyecto
+      description: Devuelve los detalles relacionados con un proyecto específico según su ID.
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles relacionados con el proyecto obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Detail'
+        '404':
+          description: Proyecto no encontrado
+        '500':
+          description: Error del servidor
+  
+  /projects/{projectId}/users/{userId}:
+    put:
+      summary: Asignar un usuario al proyecto
+      description: Asigna un usuario existente a un proyecto específico según su ID.
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario asignado al proyecto exitosamente
+        '404':
+          description: Proyecto o usuario no encontrado
+        '500':
+          description: Error del servidor
+  
+    delete:
+      summary: Elimina un usuario del proyecto
+      description: Elimina un usuario existente de un proyecto específico según su ID.
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Usuario desasignado del proyecto exitosamente
+        '404':
+          description: Proyecto o usuario no encontrado
+        '500':
+          description: Error del servidor
+  
+  
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del proyecto
+        description:
+          type: string
+          description: Descripción del proyecto
+        language:
+          type: string
+          description: Lenguaje de programación utilizado en el proyecto
+        open:
+          type: boolean
+          description: Indica si el proyecto está abierto o cerrado
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único de la etiqueta
+        label:
+          type: string
+          description: Etiqueta
+        date:
+          type: string
+          format: date
+          description: Fecha de creación de la etiqueta
+
+    Code:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del código
+        package:
+          type: string
+          description: Paquete del código
+        file:
+          type: string
+          description: Nombre del archivo
+
+    Detail:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Fecha
+        content:
+          type: string
+          description: Contenido
+        type:
+          type: string
+          description: Tipo 
+        budget:
+          type: number
+          description: Presupuesto
+
